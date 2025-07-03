@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auction Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Login Page Styles */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 400px;
+        }
+
+        .login-box h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #5a67d8;
+        }
+
+        /* Dashboard Styles */
+        .dashboard-header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .balance {
+            background: #48bb78;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .timer {
+            background: #e53e3e;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+        }
+
+        .content-area {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        /* Product Display */
+        .current-product {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .product-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 20px auto;
+            display: block;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .product-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        /* Bidding Section */
+        .bidding-section {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .bid-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .bid-input input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .bid-input button {
+            padding: 12px 24px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Product Navigation */
+        .product-nav {
+            display: none;
+            background: #2d3748;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .product-nav.active {
+            display: block;
+        }
+
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+        }
+
+        .product-item {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            transition: background 0.3s;
+        }
+
+        .product-item:hover {
+            background: #e2e8f0;
+        }
+
+        .product-item.sold {
+            background: #fed7d7;
+        }
+
+        /* Tasks Section */
+        .tasks-section {
+            margin-top: 20px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-checkbox {
+            margin-right: 10px;
+        }
+
+        /* Leaderboard */
+        .leaderboard {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .leaderboard-header {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .leaderboard-item.winner {
+            background: #c6f6d5;
+            font-weight: bold;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        /* Admin Controls */
+        .admin-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .control-btn {
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .control-btn:hover {
+            background: #5a67d8;
+        }
+
+        /* Notes Section */
+        .notes-section {
+            margin-top: 20px;
+        }
+
+        .notes-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .notes-history {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .note-item {
+            padding: 8px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        .note-item:last-child {
+            border-bottom: none;
+        }
+
+        .note-time {
+            color: #666;
+            font-size: 12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .toggle-btn {
+            background: #2d3748;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <h2>Auction Game Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>User Type:</label>
+                    <!-- <select id="userType" required>
+                        <option value="">Select User Type</option>
+                        <option value="admin">Admin</option>
+                        <option value="team">Team</option>
+                        
+                    </select> -->
+                    <button value="admin">Admin</button>
+                    <button value="team">Team</button>
+                </div>
+                <div class="form-group">
+                    <label>Username:</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="container hidden">
+        <div class="dashboard-header">
+            <div class="user-info">
+                <h2>Admin Dashboard</h2>
+                <div class="timer" id="adminTimer">10:00</div>
+            </div>
+            <button class="btn" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="admin-controls">
+            <button class="control-btn" onclick="toggleTimer()">Start/Stop Timer</button>
+            <button class="control-btn" onclick="showLeaderboard()">Show Leaderboard</button>
+            <button class="control-btn" onclick="exportData()">Export Data</button>
+            <button class="control-btn" onclick="manageTeams()">Manage Teams</button>
+        </div>
+
+        <button class="toggle-btn" onclick="toggleProductNav()">Toggle Product Navigation</button>
+
+        <div id="productNav" class="product-nav">
+            <h3 style="color: white; margin-bottom: 15px;">Select Product:</h3>
+            <div class="product-list" id="adminProductList"></div>
+        </div>
+
+        <div class="main-content">
+            <div class="content-area">
+                <div class="current-product">
+                    <div class="product-name" id="adminCurrentProductName">Select a product to start</div>
+                    <img id="adminCurrentProductImage" class="product-image" src="" alt="Product Image" style="display: none;">
+                </div>
+
+                <div id="adminLeaderboard" class="leaderboard">
+                    <div class="leaderboard-header">Team Standings</div>
+                    <div id="adminLeaderboardContent"></div>
+                </div>
+
+                <div class="notes-section">
+                    <h3>Admin Notes</h3>
+                    <textarea class="notes-input" id="adminNotesInput" placeholder="Enter admin notes..."></textarea>
+                    <button class="btn" onclick="addAdminNote()">Add Note</button>
+                    <div class="notes-history" id="adminNotesHistory"></div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <h3>Quick Actions</h3>
+                <button class="control-btn" style="width: 100%; margin-bottom: 10px;" onclick="resetGame()">Reset Game</button>
+                <button class="control-btn" style="width: 100%; margin-bottom: 10px;" onclick="viewAllTasks()">View All Tasks</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Dashboard -->
+    <div id="teamDashboard" class="container hidden">
+        <div class="dashboard-header">
+            <div class="user-info">
+                <h2 id="teamName">Team Dashboard</h2>
+                <div class="balance" id="teamBalance">₹100,000</div>
+                <div class="timer" id="teamTimer">10:00</div>
+            </div>
+            <button class="btn" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="main-content">
+            <div class="content-area">
+                <div class="current-product">
+                    <div class="product-name" id="teamCurrentProductName">Waiting for product...</div>
+                    <img id="teamCurrentProductImage" class="product-image" src="" alt="Product Image" style="display: none;">
+                </div>
+
+                <div class="bidding-section">
+                    <h3>Place Your Bid</h3>
+                    <div class="bid-input">
+                        <input type="number" id="bidAmount" placeholder="Enter bid amount" min="1">
+                        <button onclick="placeBid()">Place Bid</button>
+                    </div>
+                </div>
+
+                <div class="notes-section">
+                    <h3>Team Notes</h3>
+                    <textarea class="notes-input" id="teamNotesInput" placeholder="Enter team notes..."></textarea>
+                    <button class="btn" onclick="addTeamNote()">Add Note</button>
+                    <div class="notes-history" id="teamNotesHistory"></div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <h3>Your Products</h3>
+                <div id="ownedProducts"></div>
+
+                <div class="tasks-section">
+                    <h3>Tasks</h3>
+                    <div id="tasksList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div id="leaderboardModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLeaderboard()">&times;</span>
+            <h2>Leaderboard</h2>
+            <div id="modalLeaderboardContent"></div>
+        </div>
+    </div>
+
+    <!-- Team Management Modal -->
+    <div id="teamManagementModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTeamManagement()">&times;</span>
+            <h2>Manage Teams</h2>
+            <div id="teamManagementContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        let gameState = {
+            currentUser: null,
+            currentProduct: null,
+            timer: 600, // 10 minutes in seconds
+            timerRunning: false,
+            products: [],
+            teams: [],
+            bids: {},
+            notes: {
+                admin: [],
+                teams: {}
+            },
+            tasks: [
+                "Complete team registration",
+                "Submit initial strategy",
+                "Attend briefing session",
+                "Review product catalog",
+                "Set budget allocation",
+                "Identify priority items",
+                "Coordinate with team members",
+                "Prepare bidding strategy",
+                "Monitor competitor activity",
+                "Execute final preparations"
+            ]
+        };
+
+        // Initialize data
+        function initializeGame() {
+            // Initialize 15 teams
+            for (let i = 1; i <= 15; i++) {
+                gameState.teams.push({
+                    id: i,
+                    name: `Team ${i}`,
+                    username: `team${i}`,
+                    password: `team${i}123`,
+                    balance: 100000,
+                    products: [],
+                    tasks: gameState.tasks.map((task, index) => ({
+                        id: index,
+                        text: task,
+                        completed: false,
+                        adminApproved: false
+                    }))
+                });
+                gameState.notes.teams[`team${i}`] = [];
+            }
+
+            // Initialize 30 products
+            for (let i = 1; i <= 30; i++) {
+                gameState.products.push({
+                    id: i,
+                    name: `Product ${i}`,
+                    image: `https://via.placeholder.com/200x200?text=Product+${i}`,
+                    sold: false,
+                    winner: null,
+                    finalBid: 0
+                });
+            }
+
+            // Load saved state if exists
+            const savedState = localStorage.getItem('auctionGameState');
+            if (savedState) {
+                const parsedState = JSON.parse(savedState);
+                gameState = { ...gameState, ...parsedState };
+            }
+        }
+
+        // Save game state
+        function saveGameState() {
+            localStorage.setItem('auctionGameState', JSON.stringify(gameState));
+        }
+
+        // Login functionality
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const userType = document.getElementById('userType').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (userType === 'admin' && username === 'admin' && password === 'admin123') {
+                gameState.currentUser = { type: 'admin', username: 'admin' };
+                showAdminDashboard();
+            } else if (userType === 'team') {
+                const team = gameState.teams.find(t => t.username === username && t.password === password);
+                if (team) {
+                    gameState.currentUser = { type: 'team', username: username, teamId: team.id };
+                    showTeamDashboard();
+                } else {
+                    alert('Invalid credentials');
+                }
+            } else {
+                alert('Invalid credentials');
+            }
+        });
+
+        // Show admin dashboard
+        function showAdminDashboard() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('adminDashboard').classList.remove('hidden');
+            updateAdminProductList();
+            updateAdminLeaderboard();
+            loadAdminNotes();
+        }
+
+        // Show team dashboard
+        function showTeamDashboard() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('teamDashboard').classList.remove('hidden');
+            
+            const team = gameState.teams.find(t => t.id === gameState.currentUser.teamId);
+            document.getElementById('teamName').textContent = team.name;
+            document.getElementById('teamBalance').textContent = `₹${team.balance.toLocaleString()}`;
+            
+            updateTeamTasks();
+            updateOwnedProducts();
+            loadTeamNotes();
+            
+            if (gameState.currentProduct) {
+                updateCurrentProduct();
+            }
+        }
+
+        // Timer functionality
+        function startTimer() {
+            if (!gameState.timerRunning) {
+                gameState.timerRunning = true;
+                const timerInterval = setInterval(() => {
+                    if (gameState.timer > 0 && gameState.timerRunning) {
+                        gameState.timer--;
+                        updateTimerDisplay();
+                        saveGameState();
+                    } else {
+                        clearInterval(timerInterval);
+                        gameState.timerRunning = false;
+                    }
+                }, 1000);
+            }
+        }
+
+        function stopTimer() {
+            gameState.timerRunning = false;
+            saveGameState();
+        }
+
+        function toggleTimer() {
+            if (gameState.timerRunning) {
+                stopTimer();
+            } else {
+                startTimer();
+            }
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(gameState.timer / 60);
+            const seconds = gameState.timer % 60;
+            const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            const adminTimer = document.getElementById('adminTimer');
+            const teamTimer = document.getElementById('teamTimer');
+            
+            if (adminTimer) adminTimer.textContent = timeString;
+            if (teamTimer) teamTimer.textContent = timeString;
+        }
+
+        // Product management
+        function updateAdminProductList() {
+            const productList = document.getElementById('adminProductList');
+            productList.innerHTML = '';
+            
+            gameState.products.forEach(product => {
+                const productItem = document.createElement('div');
+                productItem.className = `product-item ${product.sold ? 'sold' : ''}`;
+                productItem.innerHTML = `
+                    <div>${product.name}</div>
+                    <small>${product.sold ? `Sold to ${product.winner}` : 'Available'}</small>
+                `;
+                productItem.onclick = () => selectProduct(product.id);
+                productList.appendChild(productItem);
+            });
+        }
+
+        function selectProduct(productId) {
+            const product = gameState.products.find(p => p.id === productId);
+            if (product && !product.sold) {
+                gameState.currentProduct = product;
+                updateCurrentProduct();
+                saveGameState();
+            }
+        }
+
+        function updateCurrentProduct() {
+            if (gameState.currentProduct) {
+                // Update admin view
+                const adminName = document.getElementById('adminCurrentProductName');
+                const adminImage = document.getElementById('adminCurrentProductImage');
+                if (adminName) adminName.textContent = gameState.currentProduct.name;
+                if (adminImage) {
+                    adminImage.src = gameState.currentProduct.image;
+                    adminImage.style.display = 'block';
+                }
+
+                // Update team view
+                const teamName = document.getElementById('teamCurrentProductName');
+                const teamImage = document.getElementById('teamCurrentProductImage');
+                if (teamName) teamName.textContent = gameState.currentProduct.name;
+                if (teamImage) {
+                    teamImage.src = gameState.currentProduct.image;
+                    teamImage.style.display = 'block';
+                }
+            }
+        }
+
+        // Bidding functionality
+        function placeBid() {
+            if (!gameState.currentProduct || gameState.currentProduct.sold) {
+                alert('No active product for bidding');
+                return;
+            }
+
+            const bidAmount = parseInt(document.getElementById('bidAmount').value);
+            if (!bidAmount || bidAmount <= 0) {
+                alert('Please enter a valid bid amount');
+                return;
+            }
+
+            const team = gameState.teams.find(t => t.id === gameState.currentUser.teamId);
+            if (bidAmount > team.balance) {
+                alert('Insufficient balance');
+                return;
+            }
+
+            // In a real auction, this would be processed differently
+            // For now, we'll assume the bid is successful
+            const confirmBid = confirm(`Place bid of ₹${bidAmount.toLocaleString()} for ${gameState.currentProduct.name}?`);
+            
+            if (confirmBid) {
+                // Deduct amount from team balance
+                team.balance -= bidAmount;
+                
+                // Add product to team's collection
+                team.products.push({
+                    ...gameState.currentProduct,
+                    purchasePrice: bidAmount,
+                    purchaseTime: new Date().toISOString()
+                });
+
+                // Mark product as sold
+                gameState.currentProduct.sold = true;
+                gameState.currentProduct.winner = team.name;
+                gameState.currentProduct.finalBid = bidAmount;
+
+                // Update displays
+                document.getElementById('teamBalance').textContent = `₹${team.balance.toLocaleString()}`;
+                updateOwnedProducts();
+                updateAdminLeaderboard();
+                
+                // Show leaderboard
+                showLeaderboardModal();
+                
+                // Clear current product
+                gameState.currentProduct = null;
+                
+                saveGameState();
+                
+                alert('Bid placed successfully!');
+                document.getElementById('bidAmount').value = '';
+            }
+        }
+
+        // Leaderboard functionality
+        function updateAdminLeaderboard() {
+            const content = document.getElementById('adminLeaderboardContent');
+            if (!content) return;
+
+            const sortedTeams = [...gameState.teams].sort((a, b) => b.products.length - a.products.length || b.balance - a.balance);
+            
+            content.innerHTML = '';
+            sortedTeams.forEach((team, index) => {
+                const item = document.createElement('div');
+                item.className = 'leaderboard-item';
+                item.innerHTML = `
+                    <span>#${index + 1} ${team.name}</span>
+                    <span>Products: ${team.products.length} | Balance: ₹${team.balance.toLocaleString()}</span>
+                `;
+                content.appendChild(item);
+            });
+        }
+
+        function showLeaderboard() {
+            updateModalLeaderboard();
+            document.getElementById('leaderboardModal').style.display = 'block';
+        }
+
+        function showLeaderboardModal() {
+            updateModalLeaderboard();
+            document.getElementById('leaderboardModal').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('leaderboardModal').style.display = 'none';
+            }, 5000);
+        }
+
+        function updateModalLeaderboard() {
+            const content = document.getElementById('modalLeaderboardContent');
+            const sortedTeams = [...gameState.teams].sort((a, b) => b.products.length - a.products.length || b.balance - a.balance);
+            
+            content.innerHTML = '';
+            sortedTeams.forEach((team, index) => {
+                const item = document.createElement('div');
+                item.className = `leaderboard-item ${team.id === gameState.currentUser?.teamId ? 'winner' : ''}`;
+                item.innerHTML = `
+                    <span>#${index + 1} ${team.name}</span>
+                    <span>Products: ${team.products.length} | Balance: ₹${team.balance.toLocaleString()}</span>
+                `;
+                content.appendChild(item);
+            });
+        }
+
+        function closeLeaderboard() {
+            document.getElementById('leaderboardModal').style.display = 'none';
+        }
+
+        // Tasks functionality
+        function updateTeamTasks() {
+            const tasksList = document.getElementById('tasksList');
+            const team = gameState.teams.find(t => t.id === gameState.currentUser.teamId);
+            
+            tasksList.innerHTML = '';
+            team.tasks.forEach((task, index) => {
+                const taskItem = document.createElement('div');
+                taskItem.className = 'task-item';
+                taskItem.innerHTML = `
+                    <div>
+                        <input type="checkbox" class="task-checkbox" 
+                               ${task.completed ? 'checked' : ''} 
+                               onchange="toggleTask(${index})">
+                        <span style="${task.completed ? 'text-decoration: line-through;' : ''}">${task.text}</span>
+                    </div>
+                    <div>
+                        <span style="color: ${task.adminApproved ? 'green' : 'orange'}; font-size: 12px;">
+                            ${task.adminApproved ? '✓ Approved' : '⏳ Pending'}
+                        </span>
+                    </div>
+                `;
+                tasksList.appendChild(taskItem);
+            });
+        }
+
+        function toggleTask(taskIndex) {
+            const team = gameState.teams.find(t => t.id === gameState.currentUser.teamId);
+            team.tasks[taskIndex].completed = !team.tasks[taskIndex].completed;
+            saveGameState();
+            updateTeamTasks();
+        }
+
+        // Products owned by team
+        function updateOwnedProducts() {
+            const ownedProducts = document.getElementById('ownedProducts');
+            const team = gameState.teams.find(t => t.id === gameState.currentUser.teamId);
+            
+            ownedProducts.innerHTML = '';
+            if (team.products.length === 0) {
+                ownedProducts.innerHTML = '<p>No products owned yet</p>';
+                return;
+            }
+
+            team.products.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.style.cssText = 'margin-bottom: 10px; padding: 10px; background: #f7fafc; border-radius: 5px;';
+                productDiv.innerHTML = `
+                    <strong>${product.name}</strong><br>
+                    <small>₹${product.purchasePrice.toLocaleString()}</small>
+                `;
+                ownedProducts.appendChild(productDiv);
+            });
+        }
+
+        // Notes functionality
+        function addAdminNote() {
+            const noteText = document.getElementById('adminNotesInput').value.trim();
+            if (noteText) {
+                gameState.notes.admin.push({
+                    text: noteText,
+                    timestamp: new Date().toISOString(),
+                    time: new Date().toLocaleString()
+                });
+                document.getElementById('adminNotesInput').value = '';
+                loadAdminNotes();
+                saveGameState();
+            }
+        }
+
+        function addTeamNote() {
+            const noteText = document.getElementById('teamNotesInput').value.trim();
+            if (noteText) {
+                const teamUsername = gameState.currentUser.username;
+                gameState.notes.teams[teamUsername].push({
+                    text: noteText,
+                    timestamp: new Date().toISOString(),
+                    time: new Date().toLocaleString()
+                });
+                document.getElementById('teamNotesInput').value = '';
+                loadTeamNotes();
+                saveGameState();
+            }
+        }
+
+        function loadAdminNotes() {
+            const notesHistory = document.getElementById('adminNotesHistory');
+            if (!notesHistory) return;
+            
+            notesHistory.innerHTML = '';
+            gameState.notes.admin.slice(-10).reverse().forEach(note => {
+                const noteDiv = document.createElement('div');
+                noteDiv.className = 'note-item';
+                noteDiv.innerHTML = `
+                    <div>${note.text}</div>
+                    <div class="note-time">${note.time}</div>
+                `;
+                notesHistory.appendChild(noteDiv);
+            });
+        }
+
+        function loadTeamNotes() {
+            const notesHistory = document.getElementById('teamNotesHistory');
+            if (!notesHistory) return;
+            
+            const teamUsername = gameState.currentUser.username;
+            notesHistory.innerHTML = '';
+            gameState.notes.teams[teamUsername].slice(-10).reverse().forEach(note => {
+                const noteDiv = document.createElement('div');
+                noteDiv.className = 'note-item';
+                noteDiv.innerHTML = `
+                    <div>${note.text}</div>
+                    <div class="note-time">${note.time}</div>
+                `;
+                notesHistory.appendChild(noteDiv);
+            });
+        }
+
+        // Admin functions
+        function toggleProductNav() {
+            const nav = document.getElementById('productNav');
+            nav.classList.toggle('active');
+        }
+
+        function manageTeams() {
+            updateTeamManagement();
+            document.getElementById('teamManagementModal').style.display = 'block';
+        }
+
+        function updateTeamManagement() {
+            const content = document.getElementById('teamManagementContent');
+            content.innerHTML = '';
+            
+            gameState.teams.forEach(team => {
+                const teamDiv = document.createElement('div');
+                teamDiv.style.cssText = 'margin-bottom: 20px; padding: 15px; border: 1px solid #e2e8f0; border-radius: 5px;';
+                teamDiv.innerHTML = `
+                    <h4>${team.name}</h4>
+                    <p>Balance: ₹${team.balance.toLocaleString()}</p>
+                    <p>Products: ${team.products.length}</p>
+                    <input type="number" id="balance-${team.id}" value="${team.balance}" style="width: 150px; margin-right: 10px;">
+                    <button onclick="updateTeamBalance(${team.id})" class="btn" style="width: auto; padding: 5px 10px;">Update Balance</button>
+                    <div style="margin-top: 10px;">
+                        <h5>Tasks Approval:</h5>
+                        ${team.tasks.map((task, index) => `
+                            <div style="margin: 5px 0;">
+                                <input type="checkbox" ${task.adminApproved ? 'checked' : ''} 
+                                       onchange="toggleTaskApproval(${team.id}, ${index})">
+                                <span style="${task.completed ? 'color: green;' : 'color: orange;'}">${task.text}</span>
+                                <small>(${task.completed ? 'Completed' : 'Not Completed'})</small>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                content.appendChild(teamDiv);
+            });
+        }
+
+        function updateTeamBalance(teamId) {
+            const newBalance = parseInt(document.getElementById(`balance-${teamId}`).value);
+            const team = gameState.teams.find(t => t.id === teamId);
+            team.balance = newBalance;
+            saveGameState();
+            updateAdminLeaderboard();
+            alert('Balance updated successfully');
+        }
+
+        function toggleTaskApproval(teamId, taskIndex) {
+            const team = gameState.teams.find(t => t.id === teamId);
+            team.tasks[taskIndex].adminApproved = !team.tasks[taskIndex].adminApproved;
+            saveGameState();
+        }
+
+        function closeTeamManagement() {
+            document.getElementById('teamManagementModal').style.display = 'none';
+        }
+
+        function exportData() {
+            const data = {
+                teams: gameState.teams.map(team => ({
+                    name: team.name,
+                    balance: team.balance,
+                    products: team.products.length,
+                    completedTasks: team.tasks.filter(t => t.completed).length,
+                    approvedTasks: team.tasks.filter(t => t.adminApproved).length
+                })),
+                products: gameState.products.filter(p => p.sold).map(product => ({
+                    name: product.name,
+                    winner: product.winner,
+                    finalBid: product.finalBid
+                }))
+            };
+            
+            const csvContent = "data:text/csv;charset=utf-8," + 
+                "Team Name,Balance,Products Owned,Completed Tasks,Approved Tasks\n" +
+                data.teams.map(team => 
+                    `${team.name},${team.balance},${team.products},${team.completedTasks},${team.approvedTasks}`
+                ).join("\n") +
+                "\n\nProduct Name,Winner,Final Bid\n" +
+                data.products.map(product => 
+                    `${product.name},${product.winner},${product.finalBid}`
+                ).join("\n");
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "auction_game_data.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function resetGame() {
+            if (confirm('Are you sure you want to reset the entire game? This cannot be undone.')) {
+                localStorage.removeItem('auctionGameState');
+                location.reload();
+            }
+        }
+
+        function viewAllTasks() {
+            alert('Task viewing feature - implement detailed task management interface');
+        }
+
+        function logout() {
+            gameState.currentUser = null;
+            document.getElementById('adminDashboard').classList.add('hidden');
+            document.getElementById('teamDashboard').classList.add('hidden');
+            document.getElementById('loginPage').classList.remove('hidden');
+        }
+
+        // Initialize the game when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeGame();
+            updateTimerDisplay();
+            
+            // Update timer display every second
+            setInterval(updateTimerDisplay, 1000);
+        });
+    </script>
+</body>
+</html>
