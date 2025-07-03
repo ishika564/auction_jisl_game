@@ -64,7 +64,7 @@
         }
 
         .btn {
-            width: 100%;
+            width: 20%;
             padding: 12px;
             background: #667eea;
             color: white;
@@ -294,6 +294,8 @@
             border-radius: 10px;
             width: 80%;
             max-width: 600px;
+            max-height: 70vh;
+            overflow-y: auto;
         }
 
         .close {
@@ -412,7 +414,6 @@
                         <option value="">Select User Type</option>
                         <option value="admin">Admin</option>
                         <option value="team">Team</option>
-                        
                     </select>
                 </div>
                 <div class="form-group">
@@ -572,26 +573,408 @@
             ]
         };
 
+        // Timer interval reference
+        let timerInterval = null;
+
         // Initialize data
+        // function initializeGame() {
+        //     // Initialize 15 teams
+        //     for (let i = 1; i <= 15; i++) {
+        //         gameState.teams.push({
+        //             id: i,
+        //             name: `Team ${i}`,
+        //             username: `team${i}`,
+        //             password: `team${i}123`,
+        //             balance: 100000,
+        //             products: [],
+        //             tasks: gameState.tasks.map((task, index) => ({
+        //                 id: index,
+        //                 text: task,
+        //                 completed: false,
+        //                 adminApproved: false
+        //             }))
+        //         });
+        //         gameState.notes.teams[`team${i}`] = [];
+        //     }
+
+        //     // Initialize 30 products
+        //     for (let i = 1; i <= 30; i++) {
+        //         gameState.products.push({
+        //             id: i,
+        //             name: `Product ${i}`,
+        //             image: `https://via.placeholder.com/200x200?text=Product+${i}`,
+        //             sold: false,
+        //             winner: null,
+        //             finalBid: 0
+        //         });
+        //     }
+
+        //     // Load saved state if exists
+        //     const savedState = localStorage.getItem('auctionGameState');
+        //     if (savedState) {
+        //         const parsedState = JSON.parse(savedState);
+        //         gameState = { ...gameState, ...parsedState };
+                
+        //         // Clear notes but keep other data
+        //         gameState.notes = {
+        //             admin: [],
+        //             teams: {}
+        //         };
+                
+        //         // Re-initialize team notes
+        //         gameState.teams.forEach(team => {
+        //             gameState.notes.teams[team.username] = [];
+        //         });
+        //     }
+        // }
+
+
+        // Initialize data
+        // function initializeGame() {
+        //     // Define different task sets for teams
+        //     const taskSets = {
+        //         marketing: [
+        //             "Create brand awareness campaign",
+        //             "Develop social media strategy",
+        //             "Design promotional materials",
+        //             "Conduct market research survey",
+        //             "Plan product launch event",
+        //             "Create customer testimonial videos",
+        //             "Develop email marketing campaign",
+        //             "Design website landing page",
+        //             "Create competitor analysis report",
+        //             "Submit final marketing strategy"
+        //         ],
+        //         sales: [
+        //             "Identify potential customers",
+        //             "Create sales pitch presentation",
+        //             "Develop pricing strategy",
+        //             "Build customer relationship database",
+        //             "Conduct sales training session",
+        //             "Create sales funnel process",
+        //             "Develop territory expansion plan",
+        //             "Submit quarterly sales forecast",
+        //             "Create client proposal templates",
+        //             "Finalize sales target achievements"
+        //         ],
+        //         operations: [
+        //             "Optimize supply chain process",
+        //             "Implement quality control measures",
+        //             "Develop inventory management system",
+        //             "Create operational workflow charts",
+        //             "Establish vendor relationships",
+        //             "Design production timeline",
+        //             "Implement cost reduction strategies",
+        //             "Create performance metrics dashboard",
+        //             "Develop maintenance schedules",
+        //             "Submit operational efficiency report"
+        //         ],
+        //         finance: [
+        //             "Prepare budget allocation plan",
+        //             "Conduct financial risk assessment",
+        //             "Create cash flow projections",
+        //             "Develop investment strategies",
+        //             "Analyze cost-benefit scenarios",
+        //             "Prepare financial statements",
+        //             "Create expense tracking system",
+        //             "Develop ROI analysis framework",
+        //             "Submit tax planning strategy",
+        //             "Finalize annual financial report"
+        //         ],
+        //         technology: [
+        //             "Develop system architecture plan",
+        //             "Implement security protocols",
+        //             "Create database design structure",
+        //             "Develop API integration strategy",
+        //             "Conduct system testing procedures",
+        //             "Create user interface mockups",
+        //             "Implement backup and recovery plan",
+        //             "Develop performance optimization plan",
+        //             "Create technical documentation",
+        //             "Submit software deployment strategy"
+        //         ],
+        //         hr: [
+        //             "Develop recruitment strategy",
+        //             "Create employee training programs",
+        //             "Implement performance evaluation system",
+        //             "Design employee benefits package",
+        //             "Establish workplace policies",
+        //             "Create team building activities plan",
+        //             "Develop succession planning strategy",
+        //             "Implement employee feedback system",
+        //             "Create diversity and inclusion program",
+        //             "Submit HR policy documentation"
+        //         ]
+        //     };
+
+
         function initializeGame() {
-            // Initialize 15 teams
-            for (let i = 1; i <= 15; i++) {
+        // Define different task sets for teams
+            const taskSets = {
+                Alpha: [
+                    "Create brand awareness campaign",
+                    "Develop social media strategy",
+                    "Design promotional materials",
+                    "Conduct market research survey",
+                    "Plan product launch event",
+                    "Create customer testimonial videos",
+                    "Develop email marketing campaign",
+                    "Design website landing page",
+                    "Create competitor analysis report",
+                    "Submit final marketing strategy"
+                ],
+                Delta: [
+                    "Identify potential customers",
+                    "Create sales pitch presentation",
+                    "Develop pricing strategy",
+                    "Build customer relationship database",
+                    "Conduct sales training session",
+                    "Create sales funnel process",
+                    "Develop territory expansion plan",
+                    "Submit quarterly sales forecast",
+                    "Create client proposal templates",
+                    "Finalize sales target achievements"
+                ],
+                Sigma: [
+                    "Optimize supply chain process",
+                    "Implement quality control measures",
+                    "Develop inventory management system",
+                    "Create operational workflow charts",
+                    "Establish vendor relationships",
+                    "Design production timeline",
+                    "Implement cost reduction strategies",
+                    "Create performance metrics dashboard",
+                    "Develop maintenance schedules",
+                    "Submit operational efficiency report"
+                ],
+                Nova: [
+                    "Prepare budget allocation plan",
+                    "Conduct financial risk assessment",
+                    "Create cash flow projections",
+                    "Develop investment strategies",
+                    "Analyze cost-benefit scenarios",
+                    "Prepare financial statements",
+                    "Create expense tracking system",
+                    "Develop ROI analysis framework",
+                    "Submit tax planning strategy",
+                    "Finalize annual financial report"
+                ],
+                Titan: [
+                    "Develop system architecture plan",
+                    "Implement security protocols",
+                    "Create database design structure",
+                    "Develop API integration strategy",
+                    "Conduct system testing procedures",
+                    "Create user interface mockups",
+                    "Implement backup and recovery plan",
+                    "Develop performance optimization plan",
+                    "Create technical documentation",
+                    "Submit software deployment strategy"
+                ],
+                Phoenix: [
+                    "Develop recruitment strategy",
+                    "Create employee training programs",
+                    "Implement performance evaluation system",
+                    "Design employee benefits package",
+                    "Establish workplace policies",
+                    "Create team building activities plan",
+                    "Develop succession planning strategy",
+                    "Implement employee feedback system",
+                    "Create diversity and inclusion program",
+                    "Submit HR policy documentation"
+                ],
+                Orion: [
+                    "Develop recruitment strategy",
+                    "Create employee training programs",
+                    "Implement performance evaluation system",
+                    "Design employee benefits package",
+                    "Establish workplace policies",
+                    "Create team building activities plan",
+                    "Develop succession planning strategy",
+                    "Implement employee feedback system",
+                    "Create diversity and inclusion program",
+                    "Submit HR policy documentation"
+                ], 
+                Omega: [
+                    "Develop recruitment strategy",
+                    "Create employee training programs",
+                    "Implement performance evaluation system",
+                    "Design employee benefits package",
+                    "Establish workplace policies",
+                    "Create team building activities plan",
+                    "Develop succession planning strategy",
+                    "Implement employee feedback system",
+                    "Create diversity and inclusion program",
+                    "Submit HR policy documentation"
+                ], 
+                Vortex: [
+                    "Develop recruitment strategy",
+                    "Create employee training programs",
+                    "Implement performance evaluation system",
+                    "Design employee benefits package",
+                    "Establish workplace policies",
+                    "Create team building activities plan",
+                    "Develop succession planning strategy",
+                    "Implement employee feedback system",
+                    "Create diversity and inclusion program",
+                    "Submit HR policy documentation"
+                ], 
+                Echo: [
+                    "Develop recruitment strategy",
+                    "Create employee training programs",
+                    "Implement performance evaluation system",
+                    "Design employee benefits package",
+                    "Establish workplace policies",
+                    "Create team building activities plan",
+                    "Develop succession planning strategy",
+                    "Implement employee feedback system",
+                    "Create diversity and inclusion program",
+                    "Submit HR policy documentation"
+                ], 
+                Quantum: [
+                    "Develop recruitment strategy",
+                    "Create employee training programs",
+                    "Implement performance evaluation system",
+                    "Design employee benefits package",
+                    "Establish workplace policies",
+                    "Create team building activities plan",
+                    "Develop succession planning strategy",
+                    "Implement employee feedback system",
+                    "Create diversity and inclusion program",
+                    "Submit HR policy documentation"
+                ],
+                Apex: [
+                    "Develop recruitment strategy",
+                    "Create employee training programs",
+                    "Implement performance evaluation system",
+                    "Design employee benefits package",
+                    "Establish workplace policies",
+                    "Create team building activities plan",
+                    "Develop succession planning strategy",
+                    "Implement employee feedback system",
+                    "Create diversity and inclusion program",
+                    "Submit HR policy documentation"
+                ],
+                Hydra: [
+                    "Develop recruitment strategy",
+                    "Create employee training programs",
+                    "Implement performance evaluation system",
+                    "Design employee benefits package",
+                    "Establish workplace policies",
+                    "Create team building activities plan",
+                    "Develop succession planning strategy",
+                    "Implement employee feedback system",
+                    "Create diversity and inclusion program",
+                    "Submit HR policy documentation"
+                ],
+                Spectra: [
+                    "Develop recruitment strategy",
+                    "Create employee training programs",
+                    "Implement performance evaluation system",
+                    "Design employee benefits package",
+                    "Establish workplace policies",
+                    "Create team building activities plan",
+                    "Develop succession planning strategy",
+                    "Implement employee feedback system",
+                    "Create diversity and inclusion program",
+                    "Submit HR policy documentation"
+                ],
+                Zenith: [
+                    "Develop recruitment strategy",
+                    "Create employee training programs",
+                    "Implement performance evaluation system",
+                    "Design employee benefits package",
+                    "Establish workplace policies",
+                    "Create team building activities plan",
+                    "Develop succession planning strategy",
+                    "Implement employee feedback system",
+                    "Create diversity and inclusion program",
+                    "Submit HR policy documentation"
+                ]
+            };
+
+
+
+
+            // Assign task categories to teams (you can customize this)
+            // const teamCategories = ['marketing', 'sales', 'operations', 'finance', 'technology', 'hr'];
+            const teamCategories = ['Alpha', 'Delta', 'Sigma', 'Nova', 'Titan', 'Phoenix', 'Orion', 'Omega', 'Vortex', 'Echo', 'Quantum', 'Apex', 'Hydra', 'Spectra', 'Zenith'];
+
+
+
+            // Team names and their corresponding passwords
+            const teamData = [
+                { name: 'Alpha', password: 'alpha2025' },
+                { name: 'Delta', password: 'delta2025' },
+                { name: 'Sigma', password: 'sigma2025' },
+                { name: 'Nova', password: 'nova2025' },
+                { name: 'Titan', password: 'titan2025' },
+                { name: 'Phoenix', password: 'phoenix2025' },
+                { name: 'Orion', password: 'orion2025' },
+                { name: 'Omega', password: 'omega2025' },
+                { name: 'Vortex', password: 'vortex2025' },
+                { name: 'Echo', password: 'echo2025' },
+                { name: 'Quantum', password: 'quantum2025' },
+                { name: 'Apex', password: 'apex2025' },
+                { name: 'Hydra', password: 'hydra2025' },
+                { name: 'Spectra', password: 'spectra2025' },
+                { name: 'Zenith', password: 'zenith2025' }
+            ];
+
+            // Initialize 15 teams with their specific names and passwords
+            teamData.forEach((teamInfo, index) => {
+                const teamId = index + 1;
+                const teamTasks = taskSets[teamInfo.name] || taskSets.Alpha; // Fallback to Alpha tasks if not found
+                
                 gameState.teams.push({
-                    id: i,
-                    name: `Team ${i}`,
-                    username: `team${i}`,
-                    password: `team${i}123`,
+                    id: teamId,
+                    name: teamInfo.name,
+                    username: teamInfo.name.toLowerCase(), // Username will be lowercase version of team name
+                    password: teamInfo.password,
                     balance: 100000,
+                    category: teamInfo.name, // Category is the team name itself
                     products: [],
-                    tasks: gameState.tasks.map((task, index) => ({
-                        id: index,
+                    tasks: teamTasks.map((task, taskIndex) => ({
+                        id: taskIndex,
                         text: task,
                         completed: false,
                         adminApproved: false
                     }))
                 });
-                gameState.notes.teams[`team${i}`] = [];
-            }
+                gameState.notes.teams[teamInfo.name.toLowerCase()] = [];
+            });
+
+            
+
+
+
+
+
+
+            // // Initialize 15 teams
+            // for (let i = 1; i <= 15; i++) {
+            //     // Assign category cyclically or you can customize per team
+            //     const categoryIndex = (i - 1) % teamCategories.length;
+            //     const category = teamCategories[categoryIndex];
+            //     const teamTasks = taskSets[category];
+                
+            //     gameState.teams.push({
+            //         id: i,
+            //         name: `Team ${i}`,
+            //         username: `team${i}`,
+            //         password: `team${i}123`,
+            //         balance: 100000,
+            //         category: category, // Store the category for reference
+            //         products: [],
+            //         tasks: teamTasks.map((task, index) => ({
+            //             id: index,
+            //             text: task,
+            //             completed: false,
+            //             adminApproved: false
+            //         }))
+            //     });
+            //     gameState.notes.teams[`team${i}`] = [];
+            // }
 
             // Initialize 30 products
             for (let i = 1; i <= 30; i++) {
@@ -610,8 +993,21 @@
             if (savedState) {
                 const parsedState = JSON.parse(savedState);
                 gameState = { ...gameState, ...parsedState };
+                
+                // Clear notes but keep other data
+                gameState.notes = {
+                    admin: [],
+                    teams: {}
+                };
+                
+                // Re-initialize team notes
+                gameState.teams.forEach(team => {
+                    gameState.notes.teams[team.username] = [];
+                });
             }
         }
+
+
 
         // Save game state
         function saveGameState() {
@@ -628,11 +1024,13 @@
 
             if (userType === 'admin' && username === 'admin' && password === 'admin123') {
                 gameState.currentUser = { type: 'admin', username: 'admin' };
+                localStorage.setItem('currentUser', JSON.stringify(gameState.currentUser));
                 showAdminDashboard();
             } else if (userType === 'team') {
                 const team = gameState.teams.find(t => t.username === username && t.password === password);
                 if (team) {
                     gameState.currentUser = { type: 'team', username: username, teamId: team.id };
+                    localStorage.setItem('currentUser', JSON.stringify(gameState.currentUser));
                     showTeamDashboard();
                 } else {
                     alert('Invalid credentials');
@@ -642,6 +1040,19 @@
             }
         });
 
+        // Check if user is already logged in
+        function checkExistingLogin() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                gameState.currentUser = JSON.parse(savedUser);
+                if (gameState.currentUser.type === 'admin') {
+                    showAdminDashboard();
+                } else if (gameState.currentUser.type === 'team') {
+                    showTeamDashboard();
+                }
+            }
+        }
+
         // Show admin dashboard
         function showAdminDashboard() {
             document.getElementById('loginPage').classList.add('hidden');
@@ -649,7 +1060,42 @@
             updateAdminProductList();
             updateAdminLeaderboard();
             loadAdminNotes();
+            
+            // Start timer if it was running
+            if (gameState.timerRunning) {
+                startTimer();
+            }
+            
+            // Update current product display
+            if (gameState.currentProduct) {
+                updateCurrentProduct();
+            }
         }
+
+        // Show team dashboard
+        // function showTeamDashboard() {
+        //     document.getElementById('loginPage').classList.add('hidden');
+        //     document.getElementById('teamDashboard').classList.remove('hidden');
+            
+        //     const team = gameState.teams.find(t => t.id === gameState.currentUser.teamId);
+        //     document.getElementById('teamName').textContent = team.name;
+        //     document.getElementById('teamBalance').textContent = `₹${team.balance.toLocaleString()}`;
+            
+        //     updateTeamTasks();
+        //     updateOwnedProducts();
+        //     loadTeamNotes();
+            
+        //     // Start timer if it was running
+        //     if (gameState.timerRunning) {
+        //         startTimer();
+        //     }
+            
+        //     // Update current product display
+        //     if (gameState.currentProduct) {
+        //         updateCurrentProduct();
+        //     }
+        // }
+
 
         // Show team dashboard
         function showTeamDashboard() {
@@ -657,23 +1103,47 @@
             document.getElementById('teamDashboard').classList.remove('hidden');
             
             const team = gameState.teams.find(t => t.id === gameState.currentUser.teamId);
-            document.getElementById('teamName').textContent = team.name;
+            if (!team) {
+                console.error('Team not found');
+                return;
+            }
+            
+            // Show team name prominently
+            document.getElementById('teamName').innerHTML = `Team ${team.name}`;
             document.getElementById('teamBalance').textContent = `₹${team.balance.toLocaleString()}`;
             
-            updateTeamTasks();
-            updateOwnedProducts();
-            loadTeamNotes();
+            // Make sure tasks are loaded
+            setTimeout(() => {
+                updateTeamTasks();
+                updateOwnedProducts();
+                loadTeamNotes();
+            }, 100);
             
+            // Start timer if it was running
+            if (gameState.timerRunning) {
+                startTimer();
+            }
+            
+            // Update current product display
             if (gameState.currentProduct) {
                 updateCurrentProduct();
             }
         }
 
+
+
+
         // Timer functionality
         function startTimer() {
-            if (!gameState.timerRunning) {
+            if (!gameState.timerRunning && gameState.timer > 0) {
                 gameState.timerRunning = true;
-                const timerInterval = setInterval(() => {
+                
+                // Clear any existing interval
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                }
+                
+                timerInterval = setInterval(() => {
                     if (gameState.timer > 0 && gameState.timerRunning) {
                         gameState.timer--;
                         updateTimerDisplay();
@@ -681,13 +1151,21 @@
                     } else {
                         clearInterval(timerInterval);
                         gameState.timerRunning = false;
+                        timerInterval = null;
+                        saveGameState();
                     }
                 }, 1000);
+                
+                saveGameState();
             }
         }
 
         function stopTimer() {
             gameState.timerRunning = false;
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
             saveGameState();
         }
 
@@ -734,7 +1212,16 @@
                 gameState.currentProduct = product;
                 updateCurrentProduct();
                 saveGameState();
+                
+                // Broadcast product change to all users (simulate real-time update)
+                broadcastProductChange();
             }
+        }
+
+        function broadcastProductChange() {
+            // In a real application, this would use WebSocket or similar
+            // For now, we'll update the display for the current user
+            updateCurrentProduct();
         }
 
         function updateCurrentProduct() {
@@ -798,8 +1285,8 @@
                 gameState.currentProduct.winner = team.name;
                 gameState.currentProduct.finalBid = bidAmount;
 
-                // Update displays
-                document.getElementById('teamBalance').textContent = `₹${team.balance.toLocaleString()}`;
+                // Update displays immediately
+                updateTeamBalance();
                 updateOwnedProducts();
                 updateAdminLeaderboard();
                 
@@ -809,11 +1296,36 @@
                 // Clear current product
                 gameState.currentProduct = null;
                 
+                // Clear current product display
+                clearCurrentProductDisplay();
+                
                 saveGameState();
                 
                 alert('Bid placed successfully!');
                 document.getElementById('bidAmount').value = '';
             }
+        }
+
+        // function updateTeamBalance() {
+        //     const team = gameState.teams.find(t => t.id === gameState.currentUser.teamId);
+        //     const balanceElement = document.getElementById('teamBalance');
+        //     if (balanceElement) {
+        //         balanceElement.textContent = `₹${team.balance.toLocaleString()}`;
+        //     }
+        // }
+
+        function clearCurrentProductDisplay() {
+            // Clear admin view
+            const adminName = document.getElementById('adminCurrentProductName');
+            const adminImage = document.getElementById('adminCurrentProductImage');
+            if (adminName) adminName.textContent = 'Select a product to start';
+            if (adminImage) adminImage.style.display = 'none';
+
+            // Clear team view
+            const teamName = document.getElementById('teamCurrentProductName');
+            const teamImage = document.getElementById('teamCurrentProductImage');
+            if (teamName) teamName.textContent = 'Waiting for product...';
+            if (teamImage) teamImage.style.display = 'none';
         }
 
         // Leaderboard functionality
@@ -869,19 +1381,105 @@
         }
 
         // Tasks functionality
+        // function updateTeamTasks() {
+        //     const tasksList = document.getElementById('tasksList');
+        //     const team = gameState.teams.find(t => t.id === gameState.currentUser.teamId);
+            
+        //     tasksList.innerHTML = '';
+        //     team.tasks.forEach((task, index) => {
+        //         const taskItem = document.createElement('div');
+        //         taskItem.className = 'task-item';
+        //         taskItem.innerHTML = `
+        //             <div>
+        //                 <input type="checkbox" class="task-checkbox" 
+        //                        ${task.completed ? 'checked' : ''} 
+        //                        onchange="toggleTask(${index})">
+        //                 <span style="${task.completed ? 'text-decoration: line-through;' : ''}">${task.text}</span>
+        //             </div>
+        //             <div>
+        //                 <span style="color: ${task.adminApproved ? 'green' : 'orange'}; font-size: 12px;">
+        //                     ${task.adminApproved ? '✓ Approved' : '⏳ Pending'}
+        //                 </span>
+        //             </div>
+        //         `;
+        //         tasksList.appendChild(taskItem);
+        //     });
+        // }
+
+
+        
+        // function updateTeamTasks() {
+        //     const tasksList = document.getElementById('tasksList');
+        //     const team = gameState.teams.find(t => t.id === gameState.currentUser.teamId);
+            
+        //     if (!team || !tasksList) {
+        //         console.error('Team or tasks list not found');
+        //         return;
+        //     }
+            
+        //     tasksList.innerHTML = '';
+            
+        //     // Add category header
+        //     const categoryHeader = document.createElement('h4');
+        //     categoryHeader.textContent = `${team.category.charAt(0).toUpperCase() + team.category.slice(1)} Tasks`;
+        //     categoryHeader.style.cssText = 'margin-bottom: 15px; color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 5px;';
+        //     tasksList.appendChild(categoryHeader);
+            
+        //     team.tasks.forEach((task, index) => {
+        //         const taskItem = document.createElement('div');
+        //         taskItem.className = 'task-item';
+        //         taskItem.innerHTML = `
+        //             <div>
+        //                 <input type="checkbox" class="task-checkbox" 
+        //                     ${task.completed ? 'checked' : ''} 
+        //                     onchange="toggleTask(${index})">
+        //                 <span style="${task.completed ? 'text-decoration: line-through;' : ''}">${task.text}</span>
+        //             </div>
+        //             <div>
+        //                 <span style="color: ${task.adminApproved ? 'green' : 'orange'}; font-size: 12px;">
+        //                     ${task.adminApproved ? '✓ Approved' : '⏳ Pending'}
+        //                 </span>
+        //             </div>
+        //         `;
+        //         tasksList.appendChild(taskItem);
+        //     });
+        // }
+
+
         function updateTeamTasks() {
             const tasksList = document.getElementById('tasksList');
             const team = gameState.teams.find(t => t.id === gameState.currentUser.teamId);
             
+            if (!team || !tasksList) {
+                console.error('Team or tasks list not found');
+                return;
+            }
+            
             tasksList.innerHTML = '';
+            
+            // Add team-specific header
+            const teamHeader = document.createElement('h4');
+            teamHeader.textContent = `${team.name} Tasks`;
+            teamHeader.style.cssText = 'margin-bottom: 15px; color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 5px;';
+            tasksList.appendChild(teamHeader);
+            
+            // Handle case where tasks might not exist
+            if (!team.tasks || team.tasks.length === 0) {
+                const noTasksMsg = document.createElement('div');
+                noTasksMsg.textContent = 'No tasks available for this team';
+                noTasksMsg.style.cssText = 'padding: 20px; text-align: center; color: #666;';
+                tasksList.appendChild(noTasksMsg);
+                return;
+            }
+            
             team.tasks.forEach((task, index) => {
                 const taskItem = document.createElement('div');
                 taskItem.className = 'task-item';
                 taskItem.innerHTML = `
                     <div>
                         <input type="checkbox" class="task-checkbox" 
-                               ${task.completed ? 'checked' : ''} 
-                               onchange="toggleTask(${index})">
+                            ${task.completed ? 'checked' : ''} 
+                            onchange="toggleTask(${index})">
                         <span style="${task.completed ? 'text-decoration: line-through;' : ''}">${task.text}</span>
                     </div>
                     <div>
@@ -894,12 +1492,33 @@
             });
         }
 
+
+        
+
+
+
+
+        // function toggleTask(taskIndex) {
+        //     const team = gameState.teams.find(t => t.id === gameState.currentUser.teamId);
+        //     team.tasks[taskIndex].completed = !team.tasks[taskIndex].completed;
+        //     saveGameState();
+        //     updateTeamTasks();
+        // }
+
         function toggleTask(taskIndex) {
             const team = gameState.teams.find(t => t.id === gameState.currentUser.teamId);
+            if (!team || !team.tasks[taskIndex]) {
+                console.error('Team or task not found');
+                return;
+            }
+            
             team.tasks[taskIndex].completed = !team.tasks[taskIndex].completed;
             saveGameState();
             updateTeamTasks();
         }
+
+
+
 
         // Products owned by team
         function updateOwnedProducts() {
@@ -997,6 +1616,86 @@
             document.getElementById('teamManagementModal').style.display = 'block';
         }
 
+        // function updateTeamManagement() {
+        //     const content = document.getElementById('teamManagementContent');
+        //     content.innerHTML = '';
+            
+        //     gameState.teams.forEach(team => {
+        //         const teamDiv = document.createElement('div');
+        //         teamDiv.style.cssText = 'margin-bottom: 20px; padding: 15px; border: 1px solid #e2e8f0; border-radius: 5px;';
+        //         teamDiv.innerHTML = `
+        //             <h4>${team.name}</h4>
+        //             <p>Balance: ₹${team.balance.toLocaleString()}</p>
+        //             <p>Products: ${team.products.length}</p>
+        //             <input type="number" id="balance-${team.id}" value="${team.balance}" style="width: 150px; margin-right: 10px;">
+        //             <button onclick="updateTeamBalance(${team.id})" class="btn" style="width: auto; padding: 5px 10px;">Update Balance</button>
+        //             <div style="margin-top: 10px;">
+        //                 <h5>Tasks Approval:</h5>
+        //                 ${team.tasks.map((task, index) => `
+        //                     <div style="margin: 5px 0;">
+        //                         <input type="checkbox" ${task.adminApproved ? 'checked' : ''} 
+        //                                onchange="toggleTaskApproval(${team.id}, ${index})">
+        //                         <span style="${task.completed ? 'color: green;' : 'color: orange;'}">${task.text}</span>
+        //                         <small>(${task.completed ? 'Completed' : 'Not Completed'})</small>
+        //                     </div>
+        //                 `).join('')}
+        //             </div>
+        //         `;
+        //         content.appendChild(teamDiv);
+        //     });
+        // }
+
+
+        // function updateTeamManagement() {
+        //     const content = document.getElementById('teamManagementContent');
+        //     content.innerHTML = '';
+            
+        //     gameState.teams.forEach(team => {
+        //         const teamDiv = document.createElement('div');
+        //         teamDiv.style.cssText = 'margin-bottom: 20px; padding: 15px; border: 1px solid #e2e8f0; border-radius: 5px;';
+        //         teamDiv.innerHTML = `
+        //             <h4>${team.name}</h4>
+        //             <p>Balance: ₹${team.balance.toLocaleString()}</p>
+        //             <p>Products: ${team.products.length}</p>
+        //             <div style="margin: 10px 0;">
+        //                 <label>Update Balance: </label>
+        //                 <input type="number" id="balance-${team.id}" value="${team.balance}" style="width: 150px; margin-right: 10px;">
+        //                 <button onclick="updateTeamBalance(${team.id})" class="btn" style="width: auto; padding: 5px 10px;">Update Balance</button>
+        //             </div>
+        //             <div style="margin-top: 15px;">
+        //                 <h5>Tasks Status & Approval:</h5>
+        //                 <div style="max-height: 200px; overflow-y: auto; border: 1px solid #e2e8f0; padding: 10px; border-radius: 5px;">
+        //                     ${team.tasks.map((task, index) => `
+        //                         <div style="margin: 8px 0; padding: 8px; background: ${task.completed ? '#f0fff4' : '#fafafa'}; border-radius: 3px; border-left: 4px solid ${task.completed ? '#48bb78' : '#e2e8f0'};">
+        //                             <div style="display: flex; justify-content: space-between; align-items: center;">
+        //                                 <div style="flex: 1;">
+        //                                     <span style="font-weight: ${task.completed ? 'bold' : 'normal'}; color: ${task.completed ? '#2d5a3d' : '#666'};">${task.text}</span>
+        //                                     <div style="font-size: 12px; margin-top: 2px;">
+        //                                         <span style="color: ${task.completed ? '#48bb78' : '#e53e3e'};">
+        //                                             ${task.completed ? '✓ Completed by Team' : '✗ Not Completed'}
+        //                                         </span>
+        //                                     </div>
+        //                                 </div>
+        //                                 <div style="margin-left: 10px;">
+        //                                     <label style="font-size: 12px; color: #666;">Admin Approval:</label>
+        //                                     <input type="checkbox" ${task.adminApproved ? 'checked' : ''} 
+        //                                         onchange="toggleTaskApproval(${team.id}, ${index})"
+        //                                         style="margin-left: 5px;">
+        //                                     <span style="font-size: 11px; color: ${task.adminApproved ? '#48bb78' : '#e53e3e'}; margin-left: 5px;">
+        //                                         ${task.adminApproved ? 'Approved' : 'Pending'}
+        //                                     </span>
+        //                                 </div>
+        //                             </div>
+        //                         </div>
+        //                     `).join('')}
+        //                 </div>
+        //             </div>
+        //         `;
+        //         content.appendChild(teamDiv);
+        //     });
+        // }
+
+
         function updateTeamManagement() {
             const content = document.getElementById('teamManagementContent');
             content.innerHTML = '';
@@ -1005,41 +1704,137 @@
                 const teamDiv = document.createElement('div');
                 teamDiv.style.cssText = 'margin-bottom: 20px; padding: 15px; border: 1px solid #e2e8f0; border-radius: 5px;';
                 teamDiv.innerHTML = `
-                    <h4>${team.name}</h4>
+                    <h4>${team.name} <span style="background: #667eea; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; text-transform: uppercase;">${team.category}</span></h4>
                     <p>Balance: ₹${team.balance.toLocaleString()}</p>
                     <p>Products: ${team.products.length}</p>
-                    <input type="number" id="balance-${team.id}" value="${team.balance}" style="width: 150px; margin-right: 10px;">
-                    <button onclick="updateTeamBalance(${team.id})" class="btn" style="width: auto; padding: 5px 10px;">Update Balance</button>
-                    <div style="margin-top: 10px;">
-                        <h5>Tasks Approval:</h5>
-                        ${team.tasks.map((task, index) => `
-                            <div style="margin: 5px 0;">
-                                <input type="checkbox" ${task.adminApproved ? 'checked' : ''} 
-                                       onchange="toggleTaskApproval(${team.id}, ${index})">
-                                <span style="${task.completed ? 'color: green;' : 'color: orange;'}">${task.text}</span>
-                                <small>(${task.completed ? 'Completed' : 'Not Completed'})</small>
-                            </div>
-                        `).join('')}
+                    <div style="margin: 10px 0;">
+                        <label>Update Balance: </label>
+                        <input type="number" id="balance-${team.id}" value="${team.balance}" style="width: 150px; margin-right: 10px;">
+                        <button onclick="updateTeamBalance(${team.id})" class="btn" style="width: auto; padding: 5px 10px;">Update Balance</button>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <h5>${team.category.charAt(0).toUpperCase() + team.category.slice(1)} Tasks - Status & Approval:</h5>
+                        <div style="max-height: 200px; overflow-y: auto; border: 1px solid #e2e8f0; padding: 10px; border-radius: 5px;">
+                            ${team.tasks.map((task, index) => `
+                                <div style="margin: 8px 0; padding: 8px; background: ${task.completed ? '#f0fff4' : '#fafafa'}; border-radius: 3px; border-left: 4px solid ${task.completed ? '#48bb78' : '#e2e8f0'};">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div style="flex: 1;">
+                                            <span style="font-weight: ${task.completed ? 'bold' : 'normal'}; color: ${task.completed ? '#2d5a3d' : '#666'};">${task.text}</span>
+                                            <div style="font-size: 12px; margin-top: 2px;">
+                                                <span style="color: ${task.completed ? '#48bb78' : '#e53e3e'};">
+                                                    ${task.completed ? '✓ Completed by Team' : '✗ Not Completed'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div style="margin-left: 10px;">
+                                            <label style="font-size: 12px; color: #666;">Admin Approval:</label>
+                                            <input type="checkbox" ${task.adminApproved ? 'checked' : ''} 
+                                                onchange="toggleTaskApproval(${team.id}, ${index})"
+                                                style="margin-left: 5px;">
+                                            <span style="font-size: 11px; color: ${task.adminApproved ? '#48bb78' : '#e53e3e'}; margin-left: 5px;">
+                                                ${task.adminApproved ? 'Approved' : 'Pending'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
                 `;
                 content.appendChild(teamDiv);
             });
         }
 
+
+
+
+
+
+
+
+        // function updateTeamBalance(teamId) {
+        //     const newBalance = parseInt(document.getElementById(`balance-${teamId}`).value);
+        //     const team = gameState.teams.find(t => t.id === teamId);
+        //     team.balance = newBalance;
+        //     saveGameState();
+        //     updateAdminLeaderboard();
+        //     alert('Balance updated successfully');
+        // }
+
+
         function updateTeamBalance(teamId) {
-            const newBalance = parseInt(document.getElementById(`balance-${teamId}`).value);
+            // Check if team management modal is open
+            const modal = document.getElementById('teamManagementModal');
+            if (!modal || modal.style.display !== 'block') {
+                console.error('Team management modal is not open');
+                return;
+            }
+            
+            const balanceInput = document.getElementById(`balance-${teamId}`);
+            
+            if (!balanceInput) {
+                console.error('Balance input not found for team', teamId);
+                // Instead of alert, just log the error and return
+                console.log('Available inputs:', document.querySelectorAll('[id^="balance-"]'));
+                return;
+            }
+            
+            const newBalance = parseInt(balanceInput.value);
+            
+            if (isNaN(newBalance) || newBalance < 0) {
+                alert('Please enter a valid balance amount');
+                return;
+            }
+            
             const team = gameState.teams.find(t => t.id === teamId);
+            
+            if (!team) {
+                console.error('Team not found:', teamId);
+                alert('Error: Team not found');
+                return;
+            }
+            
+            const oldBalance = team.balance;
             team.balance = newBalance;
+            
             saveGameState();
             updateAdminLeaderboard();
-            alert('Balance updated successfully');
+            
+            // Refresh the team management modal to show updated balance
+            updateTeamManagement();
+            
+            alert(`Balance updated successfully!\nOld Balance: ₹${oldBalance.toLocaleString()}\nNew Balance: ₹${newBalance.toLocaleString()}`);
         }
+
+
+        // function toggleTaskApproval(teamId, taskIndex) {
+        //     const team = gameState.teams.find(t => t.id === teamId);
+        //     team.tasks[taskIndex].adminApproved = !team.tasks[taskIndex].adminApproved;
+        //     saveGameState();
+        // }
+
 
         function toggleTaskApproval(teamId, taskIndex) {
             const team = gameState.teams.find(t => t.id === teamId);
+            const task = team.tasks[taskIndex];
+            
+            if (!task.completed) {
+                const confirmApproval = confirm('This task is not marked as completed by the team. Do you still want to approve it?');
+                if (!confirmApproval) {
+                    return;
+                }
+            }
+            
             team.tasks[taskIndex].adminApproved = !team.tasks[taskIndex].adminApproved;
             saveGameState();
+            
+            // Refresh the team management modal to show updated status
+            updateTeamManagement();
+            
+            const status = team.tasks[taskIndex].adminApproved ? 'approved' : 'unapproved';
+            alert(`Task "${task.text}" has been ${status} for ${team.name}`);
         }
+
 
         function closeTeamManagement() {
             document.getElementById('teamManagementModal').style.display = 'none';
@@ -1093,18 +1888,45 @@
 
         function logout() {
             gameState.currentUser = null;
+            localStorage.removeItem('currentUser');
+            
+            // Stop timer
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            
             document.getElementById('adminDashboard').classList.add('hidden');
             document.getElementById('teamDashboard').classList.add('hidden');
             document.getElementById('loginPage').classList.remove('hidden');
+            
+            // Reset form
+            document.getElementById('loginForm').reset();
         }
 
         // Initialize the game when page loads
         document.addEventListener('DOMContentLoaded', function() {
             initializeGame();
+            checkExistingLogin();
             updateTimerDisplay();
             
             // Update timer display every second
             setInterval(updateTimerDisplay, 1000);
+            
+            // Periodically check for updates (simulate real-time sync)
+            setInterval(function() {
+                if (gameState.currentUser) {
+                    // Update current product display
+                    if (gameState.currentProduct) {
+                        updateCurrentProduct();
+                    }
+                    
+                    // Update balance display for teams
+                    if (gameState.currentUser.type === 'team') {
+                        updateTeamBalance();
+                    }
+                }
+            }, 2000);
         });
     </script>
 </body>
